@@ -1,0 +1,58 @@
+<div class="example-container mat-elevation-z8">
+  <div class="example-header">
+    <mat-form-field>
+      <input matInput #filter (keyup)="applyFilter($event)" placeholder="Filter">
+      <button mat-icon-button matSuffix aria-label="clear" *ngIf="filter.value" (click)="filter.value='';">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <mat-table #table [dataSource]="dataSource">
+
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+    </ng-container>
+
+    <!-- Category Column -->
+    <ng-container matColumnDef="category">
+      <mat-header-cell *matHeaderCellDef> Kategorie </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field floatLabel="never">
+          <input matInput placeholder="Name" [value]="element.kategory" [(ngModel)]="element.kategory">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Content Column -->
+    <ng-container matColumnDef="content">
+      <mat-header-cell *matHeaderCellDef> Content </mat-header-cell>
+      <mat-cell *matCellDef="let element;let i = index">
+        <mat-form-field floatLabel="never">
+
+          <mat-chip-list #chipList aria-label="Fruit selection">
+            <mat-chip *ngFor="let element of element.content; let contentElement = index" (removed)="remove(element.name, i, contentElement)">
+              {{ element.name }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+            <input placeholder="New fruit..."
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   (matChipInputTokenEnd)="add($event, i)">
+          </mat-chip-list>
+
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>
+
+<button (click)="sendButton()">Send</button>
